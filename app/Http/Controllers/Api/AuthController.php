@@ -14,16 +14,20 @@ class AuthController extends Controller
     public function store(LoginRequest $request)
     {
         $request->authenticate();
+
+        $request->session()->regenerate();
+ 
+        return response()->noContent();
     }
 
     public function logout(Request $request)
-{
-    Auth::logout();
- 
-    $request->session()->invalidate();
- 
-    $request->session()->regenerateToken();
- 
-    return response()->noContent();
-}
+    {
+        Auth::logout();
+    
+        $request->session()->invalidate();
+    
+        $request->session()->regenerateToken();
+    
+        return response()->noContent();
+    }
 }

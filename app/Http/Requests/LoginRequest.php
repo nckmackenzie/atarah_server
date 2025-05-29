@@ -41,15 +41,13 @@ class LoginRequest extends FormRequest
             'password' => ['required'],
         ]);
  
-        if (Auth::attempt($credentials)) {
-            request()->session()->regenerate();
- 
-            return response()->noContent();
+        if (!Auth::attempt($credentials)) {
+            throw ValidationException::withMessages([
+                'email' => 'Invalid credentials.',
+            ]);
         }
  
-        throw ValidationException::withMessages([
-                'email' => 'Invalid credentials.',
-        ]);
+        
     }
 
     public function ensureIsNotRateLimited(): void
