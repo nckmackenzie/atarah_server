@@ -17,6 +17,7 @@ class User extends Authenticatable
     use HasApiTokens,HasFactory, Notifiable,SoftDeletes,HasUuids;
 
     public $timestamps = false;
+    protected $keyType = 'string';
 
     /**
      * The attributes that are mass assignable.
