@@ -15,11 +15,13 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->string('name');
             $table->string('email')->unique();
+            $table->string('contact');
             $table->string('password');
             $table->enum('user_type',['admin','user'])->default('user');
             $table->uuid(('role_id'))->nullable();
             $table->boolean('active')->default(true);
             $table->timestamp('created_at')->useCurrent();
+            $table->softDeletes();
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {
