@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\ConvertCase;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Application;
@@ -16,6 +17,7 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->statefulApi();
+        $middleware->append(ConvertCase::class);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         $exceptions->render(function (QueryException $e){
