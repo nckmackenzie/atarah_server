@@ -27,6 +27,7 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'email',
+        'contact',
         'password',
         'user_type',
         'role_id',
@@ -41,6 +42,8 @@ class User extends Authenticatable
     protected $hidden = [
         'password',
         'remember_token',
+        'deleted_at',
+        'role_id'
     ];
 
     /**
@@ -54,5 +57,15 @@ class User extends Authenticatable
             'active' => 'boolean',
             'password' => 'hashed',
         ];
+    }
+
+    public function role()
+    {
+        return $this->belongsTo(Role::class);
+    }
+
+    public function isAdmin(): bool
+    {
+        return $this->user_type === 'admin';
     }
 }
