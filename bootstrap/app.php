@@ -20,7 +20,7 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->statefulApi();
         $middleware->append(ConvertCase::class);
-        $middleware->append(AdminOnly::class);
+        
 
         $middleware->alias([
             'is.admin' => AdminOnly::class,
