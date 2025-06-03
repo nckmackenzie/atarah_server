@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('gl_accounts', function (Blueprint $table) {
             $table->id();
             $table->string('name')->index();
-            $table->integer('account_type_id');
+            $table->integer('account_type_id')->nullable();
             $table->integer('parent_id')->nullable();
             $table->boolean('is_subcategory')->default(true);
             $table->boolean('is_bank')->default(false);
