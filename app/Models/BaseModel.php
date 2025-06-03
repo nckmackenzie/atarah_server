@@ -16,7 +16,9 @@ class BaseModel extends Model
     protected $hidden = ['deleted_at'];
     protected $perPage = 10;
 
+    protected $guarded = ['id','created_at','deleted_at'];
+
     protected $casts = [
-        'is_active' => 'boolean',
+        'active' => 'boolean',
     ];
 }
