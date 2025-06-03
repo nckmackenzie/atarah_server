@@ -17,7 +17,7 @@ class ServiceController extends Controller
     {
         $query = Service::with('account:id,name');
         
-        if ($search = $request->input('search')) {
+        if ($search = $request->input('q')) {
             $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
                   ->orWhere('description', 'like', "%{$search}%")
