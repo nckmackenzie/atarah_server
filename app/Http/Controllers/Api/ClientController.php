@@ -15,7 +15,7 @@ class ClientController extends Controller
      */
     public function index(Request $request)
     {
-        $clients = Client::query();
+        $clients = Client::query()->withSum('invoices as total_invoiced','sub_total');
         if($search = $request->input('q')) {
             $clients->where(function($query) use ($search) {
                 $query->where('name', 'like', "%{$search}%")
@@ -58,7 +58,10 @@ class ClientController extends Controller
      */
     public function destroy(Client $client)
     {
-        // TODO: check whether the client can be deleted (e.g., no associated forms)
+        
+        if ($client->invoices()->exists() || $client->payments()->exists()) {
+            return response()->json(['error' => 'Client cannot be deleted because it has associated invoices or payments'], 400);
+        }
         try {
             $client->delete();
             return response()->json(['message' => 'Client deleted successfully'], 204);
