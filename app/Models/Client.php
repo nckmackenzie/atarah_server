@@ -15,6 +15,16 @@ class Client extends BaseModel
         'active' => 'boolean',
     ];
 
+    public function invoices()
+    {
+        return $this->hasMany(InvoiceHeader::class);
+    }
+
+    public function payments()
+    {
+        return $this->hasMany(InvoicePaymentHeader::class);
+    }
+
     protected function name(): Attribute
     {
         return Attribute::make(
