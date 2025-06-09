@@ -7,11 +7,14 @@ use App\Http\Requests\InvoiceRequest;
 use App\Models\InvoiceHeader;
 use App\Models\Ledger;
 use App\Models\Service;
+use App\Services\InvoicePdfService;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 use function Termwind\parse;
 
@@ -98,6 +101,42 @@ class InvoiceController extends Controller
         } catch (Exception $e) {
             Log::error('Error deleting invoice: ' . $e->getMessage());
             return response()->json(['error' => 'An error occurred while deleting the invoice.'], 500);
+        }
+    }
+
+    public function generatePdf(InvoiceHeader $invoice)
+    {
+        try {
+           
+            $invoice->load(['client', 'details.service']);
+            $invoice->loadSum('payments as amount_paid', 'amount');
+
+            $data = [
+                'invoice' => $invoice,
+                'subtotal' => $invoice->sub_total,
+                'vatAmount' => $invoice->vat_amount,
+                'total' => $invoice->total_amount,
+                'balance' => floatval($invoice->total_amount) - floatval($invoice->amount_paid ?? 0),
+            ];
+
+            $pdf = Pdf::loadView('invoices.template', $data);
+
+            $filename = "invoice-{$invoice->invoice_no}-" . now()->format('Y-m-d-H-i-s') . '.pdf';
+
+            $path = "invoices/{$filename}";
+            Storage::disk('public')->put($path, $pdf->output());
+            
+            $downloadUrl = asset("storage/{$path}");
+            
+            return response()->json([
+                'download_url' => $downloadUrl,
+                'filename' => $filename,
+                'generated_at' => now()->toISOString(),
+            ]);
+
+        } catch (Exception $e) {
+            Log::error('Error generating PDF: ' . $e->getMessage());
+            return response()->json(['error' => 'An error occurred while generating the PDF.'], 500);
         }
     }
 
