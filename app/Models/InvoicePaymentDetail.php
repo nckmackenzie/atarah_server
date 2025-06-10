@@ -12,6 +12,11 @@ class InvoicePaymentDetail extends Model
     public $timestamps = false;
     protected $guarded = ['id'];
 
+    protected $hidden = [
+        'header_id',
+        'invoice_id',
+    ];
+
     public function header()
     {
         return $this->belongsTo(InvoicePaymentHeader::class, 'header_id');
